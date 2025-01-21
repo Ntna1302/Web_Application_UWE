@@ -1,0 +1,37 @@
+@startuml
+actor User
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+
+== Add Product to Cart ==
+User -> WebInterface : Select Product and Click 'Add to Cart'
+WebInterface -> Controller : POST /cart/add (ProductID, Quantity)
+Controller -> DB : Update Cart (UserID, ProductID, Quantity)
+DB --> Controller : Confirmation
+Controller -> WebInterface : Update Cart UI
+
+== Proceed to Checkout ==
+User -> WebInterface : Click 'Proceed to Checkout'
+WebInterface -> Controller : GET /checkout
+Controller -> DB : Retrieve Cart Details (UserID)
+DB --> Controller : Return Cart Details
+Controller -> WebInterface : Display Checkout Form
+
+== Submit Order Details ==
+User -> WebInterface : Fill Checkout Form and Submit
+WebInterface -> Controller : POST /order (Order Details)
+Controller -> Controller : Validate Order Data
+alt Validation Succeeds
+    Controller -> DB : Create Order Record (UserID, Order Details)
+    DB --> Controller : Order Confirmation
+    Controller -> DB : Update Inventory (ProductID, Quantity)
+    DB --> Controller : Inventory Updated
+    Controller -> WebInterface : Redirect to Order Confirmation Page
+    WebInterface -> User : Display 'Order Placed Successfully' with Order ID
+else Validation Fails
+    Controller -> WebInterface : Return Checkout Form with Error Messages
+    WebInterface -> User : Display Validation Errors
+end
+@enduml

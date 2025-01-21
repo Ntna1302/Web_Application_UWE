@@ -1,0 +1,27 @@
+@startuml
+actor Admin
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+== Navigate to Delete Category ==
+Admin -> WebInterface : Click 'Delete' on category list
+WebInterface -> Controller : GET /delete-category?id=CategoryID
+Controller -> DB : Retrieve Category Details (CategoryID)
+DB --> Controller : Return Category Details
+Controller -> WebInterface : Render Delete Confirmation Prompt
+
+== Confirm Deletion ==
+Admin -> WebInterface : Confirm Deletion
+WebInterface -> Controller : POST /delete-category?id=CategoryID
+Controller -> Controller : Validate Deletion Request
+alt Validation Succeeds
+    Controller -> DB : Delete Category (CategoryID)
+    DB --> Controller : Confirmation of Deletion
+    Controller -> WebInterface : Redirect to category list with success message
+    WebInterface -> Admin : Display 'Category deleted successfully'
+else Validation Fails
+    Controller -> WebInterface : Return with error message
+    WebInterface -> Admin : Display error message
+end
+@enduml

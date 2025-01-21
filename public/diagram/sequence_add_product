@@ -1,0 +1,25 @@
+@startuml
+actor Admin
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+Admin -> WebInterface : Navigate to Add Product Page
+WebInterface -> Controller : Request Add Product Form
+Controller -> DB : Retrieve Necessary Data (e.g., Categories)
+DB --> Controller : Return Data
+Controller -> WebInterface : Display Add Product Form
+
+Admin -> WebInterface : Submit Add Product Form (Product Details)
+WebInterface -> Controller : Send Product Data
+Controller -> Controller : Validate Product Data
+alt Validation Succeeds
+    Controller -> DB : Save New Product
+    DB --> Controller : Confirmation
+    Controller -> WebInterface : Send Success Response
+    WebInterface -> Admin : Display Success Message / Redirect
+else Validation Fails
+    Controller -> WebInterface : Send Error Response (Validation Issues)
+    WebInterface -> Admin : Display Error Messages
+end
+@enduml

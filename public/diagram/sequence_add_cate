@@ -1,0 +1,27 @@
+@startuml
+actor Admin
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+== Navigate to Add Category ==
+Admin -> WebInterface : Click 'Add Category' 
+WebInterface -> Controller : GET /add-category
+Controller -> DB : Fetch existing categories (if needed)
+DB --> Controller : Return categories data
+Controller -> WebInterface : Render Add Category Form
+
+== Submit Add Category Form ==
+Admin -> WebInterface : Fill form and submit
+WebInterface -> Controller : POST /add-category (Category Details)
+Controller -> Controller : Validate input data
+alt Validation Succeeds
+    Controller -> DB : Insert new category
+    DB --> Controller : Confirmation
+    Controller -> WebInterface : Redirect to category list with success message
+    WebInterface -> Admin : Display 'Category added successfully'
+else Validation Fails
+    Controller -> WebInterface : Return form with error messages
+    WebInterface -> Admin : Display validation errors
+end
+@enduml

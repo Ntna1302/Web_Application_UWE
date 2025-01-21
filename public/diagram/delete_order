@@ -1,0 +1,34 @@
+dmin@startuml
+actor User
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+== Navigate to Orders Page ==
+User -> WebInterface : Click 'Orders' section
+WebInterface -> Controller : GET /orders
+Controller -> DB : Retrieve Order List
+DB --> Controller : Return Orders
+Controller -> WebInterface : Display Order List
+
+== Select Order to Delete ==
+User -> WebInterface : Click 'Delete' on specific order
+WebInterface -> Controller : GET /orders/delete?id=OrderID
+Controller -> DB : Retrieve Order Details (OrderID)
+DB --> Controller : Return Order Details
+Controller -> WebInterface : Display Delete Confirmation Prompt
+
+== Confirm Deletion ==
+User -> WebInterface : Confirm Deletion
+WebInterface -> Controller : POST /orders/delete?id=OrderID
+Controller -> Controller : Validate Deletion Request
+alt Validation Succeeds
+    Controller -> DB : Delete Order (OrderID)
+    DB --> Controller : Confirmation of Deletion
+    Controller -> WebInterface : Redirect to Orders List with Success Message
+    WebInterface -> User : Display 'Order deleted successfully'
+else Validation Fails
+    Controller -> WebInterface : Return with Error Message
+    WebInterface -> User : Display Error Message
+end
+@enduml

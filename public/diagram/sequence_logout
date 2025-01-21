@@ -1,0 +1,16 @@
+@startuml
+actor User
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Authentication Service" as AuthService
+participant "Database" as DB
+
+User -> WebInterface : Clicks Logout Button
+WebInterface -> Controller : Send Logout Request
+Controller -> AuthService : Invalidate Session (Session Token)
+AuthService -> DB : Update User Status
+DB --> AuthService : Confirmation
+AuthService --> Controller : Session Invalidated
+Controller -> WebInterface : Send Logout Confirmation
+WebInterface -> User : Redirect to Login Page / Show Logout Message
+@enduml

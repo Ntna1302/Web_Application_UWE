@@ -1,0 +1,21 @@
+@startuml
+actor User
+participant "Website Main Interface" as WebInterface
+participant "controller" as Controller
+participant "Database" as DB
+
+User -> WebInterface : Request to Register Account
+WebInterface -> Controller : Send Registration Request
+Controller -> WebInterface : Return Registration Interface
+
+User -> WebInterface : Submit Registration Form
+WebInterface -> Controller : Send Registration Data
+Controller -> DB : Validate and Save Data
+alt Data is Valid
+    DB --> Controller : Confirmation
+    Controller -> WebInterface : Registration Success Message
+else Data is Invalid
+    Controller -> WebInterface : Error Message
+end
+WebInterface -> User : Display Response
+@enduml

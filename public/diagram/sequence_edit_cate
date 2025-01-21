@@ -1,0 +1,27 @@
+@startuml
+actor Admin
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+== Navigate to Edit Category ==
+Admin -> WebInterface : Click 'Edit Category' on category list
+WebInterface -> Controller : GET /edit-category?id=CategoryID
+Controller -> DB : Retrieve Category Details (CategoryID)
+DB --> Controller : Return Category Details
+Controller -> WebInterface : Render Edit Category Form (Pre-filled Data)
+
+== Submit Edited Category Form ==
+Admin -> WebInterface : Modify form fields and submit
+WebInterface -> Controller : POST /edit-category?id=CategoryID (Updated Details)
+Controller -> Controller : Validate Updated Data
+alt Validation Succeeds
+    Controller -> DB : Update Category Details (CategoryID, Updated Details)
+    DB --> Controller : Confirmation of Update
+    Controller -> WebInterface : Redirect to category list with success message
+    WebInterface -> Admin : Display 'Category updated successfully'
+else Validation Fails
+    Controller -> WebInterface : Return form with error messages
+    WebInterface -> Admin : Display validation errors
+end
+@enduml

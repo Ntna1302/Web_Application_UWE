@@ -1,0 +1,20 @@
+@startuml
+actor User
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+User -> WebInterface : Navigate to Login Page
+User -> WebInterface : Submit Login Form (Email, Password, Phone,Full name)
+WebInterface -> Controller : Forward Login Request with Credentials
+Controller -> DB : Verify Credentials (Email, Password, Phone,Full name)
+alt Credentials are Valid
+    DB --> Controller : Confirmation
+    Controller -> WebInterface : Send Success Response (Session Token)
+    WebInterface -> User : Redirect to Home
+else Credentials are Invalid
+    DB --> Controller : Error Message
+    Controller -> WebInterface : Send Error Response
+    WebInterface -> User : Display Error Message
+end
+@enduml

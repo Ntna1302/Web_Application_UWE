@@ -1,0 +1,25 @@
+@startuml
+actor Admin
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+Admin -> WebInterface : Navigate to Delete Product Page / Select Product
+WebInterface -> Controller : Request Deletion Confirmation (Product ID)
+Controller -> DB : Retrieve Product Details (Product ID)
+DB --> Controller : Return Product Details
+Controller -> WebInterface : Display Deletion Confirmation Prompt
+
+Admin -> WebInterface : Confirm Deletion
+WebInterface -> Controller : Send Deletion Request (Product ID)
+Controller -> Controller : Validate Deletion Request
+alt Validation Succeeds
+    Controller -> DB : Delete Product (Product ID)
+    DB --> Controller : Confirmation of Deletion
+    Controller -> WebInterface : Send Success Response
+    WebInterface -> Admin : Display Success Message / Refresh Product Listing
+else Validation Fails
+    Controller -> WebInterface : Send Error Response (Validation Issues)
+    WebInterface -> Admin : Display Error Messages
+end
+@enduml

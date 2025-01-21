@@ -1,0 +1,25 @@
+@startuml
+actor Admin
+participant "Website Main Interface" as WebInterface
+participant "Controller"
+participant "Database" as DB
+
+Admin -> WebInterface : Navigate to Product Page (Select Product)
+WebInterface -> Controller : Request Edit Product Form (Product ID)
+Controller -> DB : Retrieve Product Details (Product ID)
+DB --> Controller : Return Product Details
+Controller -> WebInterface : Display Edit Product Form (Pre-filled Data)
+
+Admin -> WebInterface : Submit Edited Product Form (Updated Details)
+WebInterface -> Controller : Send Updated Product Data
+Controller -> Controller : Validate Updated Data
+alt Validation Succeeds
+    Controller -> DB : Update Product Information
+    DB --> Controller : Confirmation
+    Controller -> WebInterface : Send Success Response
+    WebInterface -> Admin : Display Success Message / Redirect
+else Validation Fails
+    Controller -> WebInterface : Send Error Response (Validation Issues)
+    WebInterface -> Admin : Display Error Messages
+end
+@enduml
